@@ -1,26 +1,44 @@
 import React from "react";
 
 const HomeBases = () => {
-  const homeBases = [];
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 2; j++) {
-      const offset = "0px";
-      homeBases.push(
-        <div
-          className="absolute h-20 w-20 rounded-xl bg-slate-800"
-          style={{
-            top: `${i == 0 ? offset : ""}`,
-            left: `${j == 0 ? offset : ""}`,
-            bottom: `${i == 1 ? offset : ""}`,
-            right: `${j == 1 ? offset : ""}`,
-          }}
-          key={i * 2 + j}
-        />
-      );
-    }
-  }
+  const positionAnchors = [
+    { top: "0px", left: "0px" },
+    { top: "0px", right: "0px" },
+    { bottom: "0px", left: "0px" },
+    { bottom: "0px", right: "0px" },
+  ];
+  const circleSize = 24;
+  const circleBaseStyle =
+    "inline-flex items-center justify-center rounded-full bg-slate-900 text-white";
+  const circleStyle = {
+    width: `${circleSize}px`,
+    height: `${circleSize}px`,
+  };
 
-  return <>{homeBases}</>;
+  return (
+    <>
+      {positionAnchors.map((style, index) => (
+        <div
+          className=" absolute grid grid-cols-2 grid-rows-2 items-center justify-items-center gap-2 rounded-xl bg-slate-400 p-1.5"
+          style={style}
+          key={index}
+        >
+          <div className={circleBaseStyle} style={circleStyle}>
+            0
+          </div>
+          <div className={circleBaseStyle} style={circleStyle}>
+            1
+          </div>
+          <div className={circleBaseStyle} style={circleStyle}>
+            2
+          </div>
+          <div className={circleBaseStyle} style={circleStyle}>
+            3
+          </div>
+        </div>
+      ))}
+    </>
+  );
 };
 
 export default HomeBases;
