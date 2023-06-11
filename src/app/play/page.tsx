@@ -7,6 +7,7 @@ import HomeBases from "./HomeBases";
 import Cards from "./Cards";
 import Mid from "./Mid";
 import Image from "next/image";
+import Marbles from "./Marbles";
 
 const Game = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -53,6 +54,7 @@ const Game = () => {
           <Circles width={size != null ? size : 0} />
           <Mid />
           <HomeBases />
+          <Marbles width={size != null ? size : 0} />
         </div>
       </div>
       <div className="flex h-full w-full flex-col items-center justify-between ">
