@@ -8,7 +8,7 @@ const Game = () => {
   const width = 700;
 
   return (
-    <div className="flex h-screen items-center justify-between p-10">
+    <div className="flex h-screen items-center justify-between py-12">
       <div className="flex h-full w-full flex-col items-center justify-between ">
         <Cards />
         <Cards />

@@ -1,12 +1,22 @@
+import Image from "next/image";
 import React from "react";
 
 const Cards = () => {
   const noCards = 5;
-  return <div className="h-20 w-full bg-blue-600">
-    {Array.from(Array(noCards).keys()).map((i) => {
-        <Image src="/images/cards/1.png" width={40} height={60} />
-    }
-  </div>;
+  return (
+    <div className="flex h-20 items-center justify-between gap-1">
+      {[1, 2, 3, 4, 5].map((cardNumber) => (
+        <Image
+          key={cardNumber}
+          className="h-full"
+          src="./Card.svg"
+          alt={`card ${cardNumber}`}
+          width="50"
+          height="100"
+        />
+      ))}
+    </div>
+  );
 };
 
 export default Cards;
