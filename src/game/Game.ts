@@ -2,6 +2,8 @@ import { Board } from "./Board";
 import { Deck } from "./Deck";
 import { Player } from "./Player";
 import { Team } from "./Team";
+import { Card } from "./Card";
+import { Marble } from "./Marble";
 
 export class Game {
   board: Board;
@@ -11,16 +13,18 @@ export class Game {
   currentPlayer: number;
   history: Board[];
 
-  constructor(teams: Team[]) {
+  constructor() {
     this.board = new Board();
     this.deck = new Deck();
-    this.teams = teams;
+    this.teams = [];
     this.players = [];
     this.history = [];
     this.currentPlayer = 0;
   }
 
   startGameOfFour(userIds: string[]) {
+    console.log("Game started");
+
     if (userIds.length !== 4) {
       throw new Error("Four user IDs must be provided");
     }
@@ -44,12 +48,20 @@ export class Game {
       } else {
         team2.players.push(player);
       }
-
-      this.nextRound();
     }
+
+    this.teams.push(team1);
+    this.teams.push(team2);
+
+    console.log("teams created" + this.teams);
+
+    this.nextRound();
+    console.log("first round starts" + this.teams);
   }
 
   nextRound() {
+    console.log("New Round started");
+    console.log("size of the card deck is " + this.deck.cards.length);
     // Set the current player to the first player again
     let numberOfCardsToDealPerPlayer = 5;
 
@@ -58,6 +70,13 @@ export class Game {
     }
     this.dealCards(numberOfCardsToDealPerPlayer);
     this.currentPlayer = 0;
+
+    if (this.deck.cards.length == 0) {
+      console.log("Shuffling new cards");
+      this.deck = new Deck();
+      return this.nextTurn();
+    }
+    this.nextRound();
   }
 
   nextTurn() {
@@ -87,3 +106,5 @@ export class Game {
 
   // Implement other methods based on your game rules
 }
+
+export { Deck, Player, Team, Board, Card, Marble };

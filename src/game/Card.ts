@@ -13,6 +13,10 @@ export enum CardValue {
   TWELVE = 12,
   THIRTEEN = 13,
   TRICKSER = -1,
+  DEVIL = -2,
+  JESTER = -3,
+  ANGEL = -4,
+  WORRIOR = -5,
   TAC = -10,
 }
 

@@ -24,6 +24,10 @@ export class Deck {
       [CardValue.TWELVE]: 7,
       [CardValue.THIRTEEN]: 9,
       [CardValue.TRICKSER]: 7,
+      [CardValue.DEVIL]: 1,
+      [CardValue.JESTER]: 1,
+      [CardValue.ANGEL]: 1,
+      [CardValue.WORRIOR]: 1,
       [CardValue.TAC]: 4,
     };
 
