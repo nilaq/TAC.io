@@ -1,11 +1,18 @@
 // app/layout.tsx
-import "./globals.css";
+import "@/styles/globals.css";
+import { Inter } from "next/font/google";
+import { twMerge } from "tailwind-merge";
 import { ClerkProvider } from "@clerk/nextjs";
-import TopNavLayout from "./_components/topnav";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata = {
-  title: "T3 Future",
-  description: "Project started by t3-future",
+  title: "Tac.io",
+  description: "Multiplayer TAC online game",
+  icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
 export default function RootLayout({
@@ -16,8 +23,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
-          <TopNavLayout>{children}</TopNavLayout>
+        <body
+          className={twMerge(
+            "text-foreground bg-slate-100 font-sans",
+            inter.variable
+          )}
+        >
+          {children}
         </body>
       </html>
     </ClerkProvider>
