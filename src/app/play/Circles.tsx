@@ -1,81 +1,45 @@
 import React from "react";
+import { Coordinator, Player } from "./positions";
 
-const Circles = (props: { width: number }) => {
-  const inset = 16;
-  const circleSize = 24;
-  const circleCount = 64;
-  const circles = [];
-  const circleBaseStyle =
-    "absolute inline-flex items-center justify-center rounded-full bg-slate-900 text-white";
-  const radius = (props.width - circleSize - inset) / 2;
+const circleSize = 24;
+const inset = 16;
+const circleCount = 64;
 
-  // marbles around the circle
-  for (let i = 0; i < circleCount; i++) {
-    const angle = 2 * Math.PI * (i / circleCount);
-    const top = radius * Math.cos(angle) + radius + inset / 2;
-    const right = radius * Math.sin(angle) + radius + inset / 2;
+const CircleBaseStyle =
+  "absolute inline-flex items-center justify-center rounded-full bg-slate-900 text-white";
 
-    const circleStyle = {
-      width: `${circleSize}px`,
-      height: `${circleSize}px`,
-      top: `${top}px`,
-      right: `${right}px`,
-    };
-    circles.push(
-      <div className={circleBaseStyle} style={circleStyle} key={i}>
-        {/*i*/}
-      </div>
-    );
-  }
+const Circle = ({ className, style, key, children }) => (
+  <div className={className} style={style} key={key}>
+    {children}
+  </div>
+);
 
-  // marbles in the house
-  for (let i = 0; i < 4; i++) {
-    const gap = radius * Math.sin((2 * Math.PI) / circleCount) - circleSize;
-    const offset = (circleSize + gap) * (1 + i) + inset / 2;
-    const baseStyle = {
-      width: `${circleSize}px`,
-      height: `${circleSize}px`,
-    };
+const Circles = ({ width }) => {
+  const coordinator = new Coordinator(width, circleSize, circleCount, inset);
 
-    circles.push(
-      <div
-        className={circleBaseStyle}
-        style={{ ...baseStyle, top: `${offset}px` }}
+  const circlesOnBoard = Array.from({ length: circleCount }, (_, i) => (
+    <Circle
+      className={CircleBaseStyle}
+      style={coordinator.getPositionOnBoard(i)}
+      key={i}
+    >
+      {i}
+    </Circle>
+  ));
+
+  const players = [Player.top, Player.right, Player.bottom, Player.left];
+  const houseCircles = players.flatMap((player) =>
+    Array.from({ length: 4 }, (_, i) => (
+      <Circle
+        className={CircleBaseStyle}
+        style={coordinator.getHousePosition(player, i)}
         key={i}
-      >
-        {/*i*/}
-      </div>
-    );
-    circles.push(
-      <div
-        className={circleBaseStyle}
-        style={{ ...baseStyle, left: `${offset}px` }}
-        key={i}
-      >
-        {/*i*/}
-      </div>
-    );
-    circles.push(
-      <div
-        className={circleBaseStyle}
-        style={{ ...baseStyle, right: `${offset}px` }}
-        key={i}
-      >
-        {/*i*/}
-      </div>
-    );
-    circles.push(
-      <div
-        className={circleBaseStyle}
-        style={{ ...baseStyle, bottom: `${offset}px` }}
-        key={i}
-      >
-        {/*i*/}
-      </div>
-    );
-  }
+      />
+    ))
+  );
 
-  return <>{circles}</>;
+  return <>{[...circlesOnBoard, ...houseCircles]}</>;
 };
 
 export default Circles;
+
