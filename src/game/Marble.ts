@@ -41,13 +41,13 @@ export class Marble {
   get player() {
     switch (this.offset) {
       case 0:
-        return Player.bottom;
+        return Player.bottomRight;
       case 16:
-        return Player.left;
+        return Player.bottomLeft;
       case 32:
-        return Player.top;
-      default:
-        return Player.right;
+        return Player.topLeft;
+      default: // top right
+        return Player.topRight;
     }
   }
 

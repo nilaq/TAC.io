@@ -41,7 +41,12 @@ export class Game {
       }
 
       //Here we could add logic for splitting up teams
-      const colors = ["bg-red-500", "bg-blue-500", "bg-red-500", "bg-red-500"];
+      const colors = [
+        "bg-red-500",
+        "bg-yellow-500",
+        "bg-blue-500",
+        "bg-green-500",
+      ];
       const player = new Player(
         userId,
         i < 2 ? team1 : team2,

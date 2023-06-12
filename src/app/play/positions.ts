@@ -10,10 +10,10 @@ interface Position {
 }
 
 export enum Player {
-  right,
-  left,
-  top,
-  bottom,
+  topRight,
+  bottomRight,
+  bottomLeft,
+  topLeft,
 }
 
 export class Coordinator {
@@ -48,46 +48,43 @@ export class Coordinator {
   }
 
   getBasePosition(player: Player, position: number): Position {
-    const positionAnchors = [
-      { top: "0px", left: "0px" },
-      { top: "0px", right: "0px" },
-      { bottom: "0px", left: "0px" },
-      { bottom: "0px", right: "0px" },
-    ];
     const gap = 8;
     const padding = 6;
-    const offsetX = padding + (this.circleSize + gap) * (position % 2);
-    const offsetY =
-      padding + (this.circleSize + gap) * Math.floor(position / 2);
+    let offsetX = padding;
+    let offsetY = padding;
     const baseStyle = {
       width: `${this.circleSize}px`,
       height: `${this.circleSize}px`,
     };
 
     switch (player) {
-      case Player.top:
-        return {
-          ...baseStyle,
-          top: `${offsetY}px`,
-          left: `${offsetX}px`,
-        };
-      case Player.bottom:
+      case Player.topRight:
+        offsetX += this.circleSize + gap;
         return {
           ...baseStyle,
           top: `${offsetY}px`,
           right: `${offsetX}px`,
         };
-      case Player.left:
+      case Player.bottomRight:
+        offsetX += this.circleSize + gap;
+        offsetY += this.circleSize + gap;
         return {
           ...baseStyle,
-          bottom: `${offsetX}px`,
-          left: `${offsetY}px`,
+          bottom: `${offsetY}px`,
+          right: `${offsetX}px`,
         };
-      default:
+      case Player.bottomLeft:
+        offsetY += this.circleSize + gap;
         return {
           ...baseStyle,
-          bottom: `${offsetX}px`,
-          right: `${offsetY}px`,
+          bottom: `${offsetY}px`,
+          left: `${offsetX}px`,
+        };
+      default: // topLeft
+        return {
+          ...baseStyle,
+          top: `${offsetY}px`,
+          left: `${offsetX}px`,
         };
     }
   }
@@ -116,25 +113,25 @@ export class Coordinator {
     };
 
     switch (player) {
-      case Player.top:
+      case Player.topRight:
         return {
           ...baseStyle,
-          top: `${offset}px`,
+          right: `${offset}px`,
         };
-      case Player.bottom:
+      case Player.bottomRight:
         return {
           ...baseStyle,
           bottom: `${offset}px`,
         };
-      case Player.left:
-        return {
-          ...baseStyle,
-          left: `${offset}px`,
-        };
-      default:
+      case Player.bottomLeft:
         return {
           ...baseStyle,
           right: `${offset}px`,
+        };
+      default: // topLeft
+        return {
+          ...baseStyle,
+          left: `${offset}px`,
         };
     }
   }

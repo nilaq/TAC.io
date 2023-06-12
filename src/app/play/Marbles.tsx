@@ -19,7 +19,7 @@ const Marbles = (props: { width: number }) => {
   );
 
   const CircleBaseStyle =
-    "absolute inline-flex items-center justify-center rounded-full text-black z-50 bg-zinc-900";
+    "absolute inline-flex items-center justify-center rounded-full text-black z-50 bg-blue-500";
 
   const moveMarble = (positions: number) => {
     for (let i = 1; i <= positions; i++) {
@@ -41,7 +41,7 @@ const Marbles = (props: { width: number }) => {
     <>
       {gameState.board.marbles.map((marble, index) => (
         <motion.div
-          className={cn(CircleBaseStyle, `${marble.color}`)}
+          className={CircleBaseStyle}
           initial={{ ...coordinator.getPosition(marble) }} // initial state
           animate={coordinator.getPosition(marble)} // updated state
           key={index}
