@@ -21,11 +21,9 @@ export enum CardValue {
 }
 
 export class Card {
-  isPlayable: boolean;
   value: number; // Assuming a card has a value, update based on your game rules
 
   constructor(value: CardValue) {
     this.value = value;
-    this.isPlayable = false;
   }
 }

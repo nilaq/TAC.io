@@ -29,9 +29,6 @@ export class Game {
       throw new Error("Four user IDs must be provided");
     }
 
-    const team1 = new Team([]);
-    const team2 = new Team([]);
-
     // Create a player for each user ID and assign them to a team
     for (let i = 0; i < 4; i++) {
       const userId = userIds[i];
@@ -40,26 +37,23 @@ export class Game {
       }
 
       //Here we could add logic for splitting up teams
-      const player = new Player(userId, i < 2 ? team1 : team2);
+      const player = new Player(userId, i < 2 ? 1 : 2);
       this.players.push(player);
-
-      if (i < 2) {
-        team1.players.push(player);
-      } else {
-        team2.players.push(player);
-      }
     }
 
-    this.teams.push(team1);
-    this.teams.push(team2);
-
     console.log("teams created" + this.teams);
+    console.log("first round starts" + this.teams);
 
     this.nextRound();
-    console.log("first round starts" + this.teams);
   }
 
   nextRound() {
+    if (this.deck.cards.length == 0) {
+      console.log("Shuffling new cards");
+      this.deck = new Deck();
+      this.deck.shuffle();
+    }
+
     console.log("New Round started");
     console.log("size of the card deck is " + this.deck.cards.length);
     // Set the current player to the first player again
@@ -71,16 +65,24 @@ export class Game {
     this.dealCards(numberOfCardsToDealPerPlayer);
     this.currentPlayer = 0;
 
-    if (this.deck.cards.length == 0) {
-      console.log("Shuffling new cards");
-      this.deck = new Deck();
-      return this.nextTurn();
-    }
-    this.nextRound();
+    //Determine whether each player CAN come out during this round
+    this.players.forEach((player) => {
+      player.calculateIfCanComeOut();
+      console.log(player.userId + " can come out: " + player.canComeOut);
+    });
+    this.playersMoving();
   }
 
-  nextTurn() {
-    // Advance to the next player's turn
+  playersMoving() {
+    this.players.forEach((player) => {
+      console.log(player.userId + " has " + JSON.stringify(player.hand));
+      player.chooseCardToPlay();
+    });
+    if (this.players[0]?.hand.length === 0) {
+      return;
+      this.nextRound();
+    }
+    this.playersMoving();
   }
 
   swapCards() {
@@ -88,6 +90,7 @@ export class Game {
   }
 
   dealCards(numberOfCards: number) {
+    console.log("Dealing " + numberOfCards + " cards");
     // Assign numberOfCards cards to each player
     this.players.forEach((player) => {
       for (let i = 0; i < numberOfCards; i++) {
