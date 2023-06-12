@@ -1,3 +1,5 @@
+import { Marble, MarbleState } from "@/game/Marble";
+
 interface Position {
   width: string;
   height: string;
@@ -30,6 +32,54 @@ export class Coordinator {
     this.circleCount = circleCount;
     this.inset = inset;
     this.radius = (width - inset - circleSize) / 2;
+  }
+
+  getPosition(marble: Marble): Position {
+    switch (marble.state) {
+      case MarbleState.Base:
+        this.getBasePosition(marble.player, marble.position);
+      case MarbleState.Ring:
+        return this.getPositionOnBoard(marble.position);
+      case MarbleState.House:
+        return this.getHousePosition(marble.player, marble.position);
+      case MarbleState.Finished:
+        return this.getHousePosition(marble.player, marble.position);
+    }
+  }
+
+  getBasePosition(player: Player, position: number): Position {
+    const gap =
+      this.radius * Math.sin((2 * Math.PI) / this.circleCount) -
+      this.circleSize;
+    const offset = (this.circleSize + gap) * (1 + position) + this.inset / 2;
+    const baseStyle = {
+      width: `${this.circleSize}px`,
+      height: `${this.circleSize}px`,
+    };
+
+    switch (player) {
+      case Player.top:
+        return {
+          ...baseStyle,
+          top: `${offset}px`,
+        };
+      case Player.bottom:
+        return {
+          ...baseStyle,
+          bottom: `${offset}px`,
+        };
+      case Player.left:
+        return {
+          ...baseStyle,
+          left: `${offset}px`,
+        };
+      default:
+        return {
+          ...baseStyle,
+          right: `${offset}px`,
+        };
+    }
+  }
   }
 
   getPositionOnBoard(index: number): Position {
