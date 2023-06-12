@@ -2,11 +2,15 @@ import React from "react";
 import { Coordinator } from "./positions";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useGameStore } from "@/stores/gameStore";
+import { MarbleState } from "@/game/Marble";
+import { cn } from "@/lib/utils";
 
 const Marbles = (props: { width: number }) => {
-  const circleSize = 24;
-  const inset = 16;
-  const circleCount = 64;
+  const { circleCount, circleSize, inset, gameState } = useGameStore(
+    (state) => state
+  );
+
   const coordinator = new Coordinator(
     props.width,
     circleSize,
@@ -15,25 +19,36 @@ const Marbles = (props: { width: number }) => {
   );
 
   const CircleBaseStyle =
-    "absolute inline-flex items-center justify-center rounded-full bg-slate-900 text-white bg-red-600 border-1 border-red-6";
-
-  const [marblePos, setMarblePos] = React.useState(0);
+    "absolute inline-flex items-center justify-center rounded-full text-black z-50 bg-zinc-900";
 
   const moveMarble = (positions: number) => {
     for (let i = 1; i <= positions; i++) {
       setTimeout(() => {
-        setMarblePos(marblePos + i);
+        if (gameState.board.marbles[0] !== undefined) {
+          if (gameState.board.marbles[0].state === MarbleState.Base) {
+            gameState.board.marbles[0].moveToRing();
+          } else {
+            gameState.board.marbles[0].move(1);
+          }
+        }
       }, 150 * i);
     }
   };
 
+  console.log(gameState.board.marbles);
+
   return (
     <>
-      <motion.div
-        className={CircleBaseStyle}
-        initial={{ ...coordinator.getPositionOnBoard(marblePos) }} // initial state
-        animate={coordinator.getPositionOnBoard(marblePos)} // updated state
-      ></motion.div>
+      {gameState.board.marbles.map((marble, index) => (
+        <motion.div
+          className={cn(CircleBaseStyle, `${marble.color}`)}
+          initial={{ ...coordinator.getPosition(marble) }} // initial state
+          animate={coordinator.getPosition(marble)} // updated state
+          key={index}
+        >
+          {index}
+        </motion.div>
+      ))}
       <Button
         onClick={() => moveMarble(10)}
         className="absolute left-[280px] top-[280px] z-20"

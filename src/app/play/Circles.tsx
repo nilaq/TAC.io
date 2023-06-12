@@ -46,7 +46,7 @@ const Circles = ({ width }: CirclesProps) => {
     Array.from({ length: 4 }, (_, i) => (
       <Circle
         className={CircleBaseStyle}
-        style={coordinator.getHousePosition(player, i)}
+        style={coordinator.getBasePosition(player, i)}
         key={i}
       >
         {i}

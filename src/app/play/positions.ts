@@ -1,3 +1,5 @@
+import { Marble, MarbleState } from "@/game/Marble";
+
 interface Position {
   width: string;
   height: string;
@@ -30,6 +32,64 @@ export class Coordinator {
     this.circleCount = circleCount;
     this.inset = inset;
     this.radius = (width - inset - circleSize) / 2;
+  }
+
+  getPosition(marble: Marble): Position {
+    switch (marble.state) {
+      case MarbleState.Base:
+        return this.getBasePosition(marble.player, marble.position);
+      case MarbleState.Ring:
+        return this.getPositionOnBoard(marble.position);
+      case MarbleState.House:
+        return this.getHousePosition(marble.player, marble.position);
+      case MarbleState.Finished:
+        return this.getHousePosition(marble.player, marble.position);
+    }
+  }
+
+  getBasePosition(player: Player, position: number): Position {
+    const positionAnchors = [
+      { top: "0px", left: "0px" },
+      { top: "0px", right: "0px" },
+      { bottom: "0px", left: "0px" },
+      { bottom: "0px", right: "0px" },
+    ];
+    const gap = 8;
+    const padding = 6;
+    const offsetX = padding + (this.circleSize + gap) * (position % 2);
+    const offsetY =
+      padding + (this.circleSize + gap) * Math.floor(position / 2);
+    const baseStyle = {
+      width: `${this.circleSize}px`,
+      height: `${this.circleSize}px`,
+    };
+
+    switch (player) {
+      case Player.top:
+        return {
+          ...baseStyle,
+          top: `${offsetY}px`,
+          left: `${offsetX}px`,
+        };
+      case Player.bottom:
+        return {
+          ...baseStyle,
+          top: `${offsetY}px`,
+          right: `${offsetX}px`,
+        };
+      case Player.left:
+        return {
+          ...baseStyle,
+          bottom: `${offsetX}px`,
+          left: `${offsetY}px`,
+        };
+      default:
+        return {
+          ...baseStyle,
+          bottom: `${offsetX}px`,
+          right: `${offsetY}px`,
+        };
+    }
   }
 
   getPositionOnBoard(index: number): Position {

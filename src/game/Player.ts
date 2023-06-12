@@ -8,6 +8,7 @@ export class Player {
   marbles: Marble[];
   hand: Card[];
   isFinished: boolean;
+<<<<<<< HEAD
   canComeOut: boolean;
 
   constructor(userId: string, team: number) {
@@ -17,6 +18,24 @@ export class Player {
     this.isFinished = false; // Initially, a player is not finished
     this.userId = userId;
     this.canComeOut = false;
+=======
+  color: string;
+  startPosition: number;
+
+  constructor(
+    userId: string,
+    team: Team,
+    color: string,
+    startPosition: number
+  ) {
+    this.team = team;
+    this.marbles = []; // marbles are added when game starts
+    this.hand = []; // This will be filled when game starts
+    this.isFinished = false; // Initially, a player is not finished
+    this.userId = userId;
+    this.color = color;
+    this.startPosition = startPosition;
+>>>>>>> 5b4981b543044fad81f5dc7302e407ee2be8fee3
   }
 
   chooseCardToPlay() {

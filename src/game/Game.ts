@@ -17,6 +17,7 @@ export class Game {
     this.players = [];
     this.history = [];
     this.currentPlayer = 0;
+    this.startGameOfFour(["1", "2", "3", "4"]);
   }
 
   startGameOfFour(userIds: string[]) {
@@ -34,11 +35,33 @@ export class Game {
       }
 
       //Here we could add logic for splitting up teams
+<<<<<<< HEAD
       const player = new Player(userId, i < 2 ? 1 : 2);
+=======
+      const colors = ["bg-red-500", "bg-blue-500", "bg-red-500", "bg-red-500"];
+      const player = new Player(
+        userId,
+        i < 2 ? team1 : team2,
+        colors[i] as string,
+        i * 16
+      );
+>>>>>>> 5b4981b543044fad81f5dc7302e407ee2be8fee3
       this.players.push(player);
     }
 
+<<<<<<< HEAD
     console.log("players created" + this.players);
+=======
+    this.teams.push(team1);
+    this.teams.push(team2);
+
+    this.players.forEach((player) => {
+      this.board.addMarblesForPlayer(player);
+    });
+
+    console.log("teams created" + this.teams);
+
+>>>>>>> 5b4981b543044fad81f5dc7302e407ee2be8fee3
     this.nextRound();
   }
 
