@@ -19,6 +19,7 @@ export class Game {
     this.history = [];
     this.currentPlayer = 0;
     this.previousDeck = [];
+    this.startGameOfFour(["1", "2", "3", "4"]);
   }
 
   debug() {
@@ -26,55 +27,46 @@ export class Game {
 
     m1.move(-4);
     console.log(
-      "moved marble by -4 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
+      "moved marble by -4 to " + m1.position + " current state is " + m1.state
     );
     m1.move(100);
     console.log(
-      "moved marble by 100 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
+      "moved marble by 100 to " + m1.position + " current state is " + m1.state
     );
 
     m1.move(1);
     console.log(
-      "moved marble by 1 to " + m1.position + " current state is " + m1.getState
+      "moved marble by 1 to " + m1.position + " current state is " + m1.state
     );
 
     m1.move(-4);
     console.log(
-      "moved marble by -4 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
+      "moved marble by -4 to " + m1.position + " current state is " + m1.state
     );
     m1.move(8, true);
     console.log(
-      "moved marble by 8 to " + m1.position + " current state is " + m1.getState
+      "moved marble by 8 to " + m1.position + " current state is " + m1.state
     );
 
     const m2 = new Marble("green", 0);
     m2.move(1);
     console.log(
-      "moved m2 by 1 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by 1 to " + m2.position + " current state is " + m2.state
     );
 
     m2.move(-4);
     console.log(
-      "moved m2 by -4 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by -4 to " + m2.position + " current state is " + m2.state
     );
 
     m2.move(62);
     console.log(
-      "moved m2 by 62 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by 62 to " + m2.position + " current state is " + m2.state
     );
 
     m2.move(5);
     console.log(
-      "moved m2 by 5 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by 5 to " + m2.position + " current state is " + m2.state
     );
   }
 
@@ -94,10 +86,10 @@ export class Game {
 
       //Here we could add logic for splitting up teams
       const colors = [
-        "bg-red-500",
-        "bg-yellow-500",
-        "bg-blue-500",
-        "bg-green-500",
+        "#ef4444", // red
+        "#f59e0b", // yellow
+        "#0ea5e9", // blue
+        "#84cc16", // green,
       ];
       const player = new Player(
         userId,
@@ -109,6 +101,12 @@ export class Game {
     }
 
     console.log("players created" + this.players);
+
+    // Add the marbles for each player to the board
+    this.players.forEach((player) => {
+      this.board.addMarblesForPlayer(player);
+    });
+
     this.nextRound();
   }
 

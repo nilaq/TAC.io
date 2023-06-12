@@ -7,9 +7,10 @@ import { MarbleState } from "@/game/Marble";
 import { cn } from "@/lib/utils";
 
 const Marbles = (props: { width: number }) => {
-  const { circleCount, circleSize, inset, gameState } = useGameStore(
-    (state) => state
-  );
+  const { circleCount, circleSize, inset, gameState, setGameState } =
+    useGameStore((state) => state);
+
+  const [hasChanged, setHasChanged] = React.useState(false);
 
   const coordinator = new Coordinator(
     props.width,
@@ -19,23 +20,32 @@ const Marbles = (props: { width: number }) => {
   );
 
   const CircleBaseStyle =
-    "absolute inline-flex items-center justify-center rounded-full text-black z-50 bg-blue-500";
+    "absolute inline-flex items-center justify-center rounded-full text-black z-50";
 
   const moveMarble = (positions: number) => {
-    for (let i = 1; i <= positions; i++) {
-      setTimeout(() => {
-        if (gameState.board.marbles[0] !== undefined) {
-          if (gameState.board.marbles[0].state === MarbleState.Base) {
-            gameState.board.marbles[0].moveToRing();
-          } else {
-            gameState.board.marbles[0].move(1);
+    if (gameState.board.marbles[0]?.state === MarbleState.Base) {
+      gameState.board.marbles[0].move(1);
+      console.log("move to ring");
+      setHasChanged(true);
+    } else {
+      for (let i = 1; i <= positions; i++) {
+        setTimeout(() => {
+          if (gameState.board.marbles[0] !== undefined) {
+            console.log("move");
+            gameState.board.marbles[0].move(1, true);
+            setHasChanged(true);
           }
-        }
-      }, 150 * i);
+        }, 150 * i);
+      }
     }
   };
 
-  console.log(gameState.board.marbles);
+  React.useEffect(() => {
+    if (hasChanged) {
+      setHasChanged(false);
+    }
+    setGameState(gameState);
+  }, [hasChanged, gameState, setGameState]);
 
   return (
     <>
@@ -44,14 +54,19 @@ const Marbles = (props: { width: number }) => {
           className={CircleBaseStyle}
           initial={{ ...coordinator.getPosition(marble) }} // initial state
           animate={coordinator.getPosition(marble)} // updated state
+          style={{
+            backgroundColor: marble.color,
+          }}
           key={index}
         >
-          {index}
+          {marble.position}
         </motion.div>
       ))}
       <Button
-        onClick={() => moveMarble(10)}
-        className="absolute left-[280px] top-[280px] z-20"
+        onClick={() => {
+          moveMarble(33);
+        }}
+        className="absolute left-[270px] top-[300px] z-20"
       >
         Move Marble
       </Button>

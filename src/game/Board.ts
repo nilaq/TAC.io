@@ -9,8 +9,8 @@ export class Board {
   }
 
   addMarblesForPlayer(player: Player) {
-    for (let i = 0; i < 4; i++) {
-      const marble = new Marble(player.color, player.startPosition);
+    for (let i = 1; i <= 4; i++) {
+      const marble = new Marble(player.color, player.startPosition, -i);
       this.marbles.push(marble);
       player.marbles.push(marble);
     }

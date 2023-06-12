@@ -21,6 +21,7 @@ export class Coordinator {
   private circleCount: number;
   private inset: number;
   private radius: number;
+  private width: number;
 
   constructor(
     width: number,
@@ -32,6 +33,7 @@ export class Coordinator {
     this.circleCount = circleCount;
     this.inset = inset;
     this.radius = (width - inset - circleSize) / 2;
+    this.width = width;
   }
 
   getPosition(marble: Marble): Position {
@@ -39,9 +41,9 @@ export class Coordinator {
       case MarbleState.Base:
         return this.getBasePosition(marble.player, marble.position);
       case MarbleState.Ring:
+      case MarbleState.RingMoved:
         return this.getPositionOnBoard(marble.position);
       case MarbleState.House:
-        return this.getHousePosition(marble.player, marble.position);
       case MarbleState.Finished:
         return this.getHousePosition(marble.player, marble.position);
     }
@@ -52,6 +54,9 @@ export class Coordinator {
     const padding = 6;
     let offsetX = padding;
     let offsetY = padding;
+    const positionOffsetX = -(gap + this.circleSize) * ((position % 2) + 1);
+    const positionOffsetY =
+      -(gap + this.circleSize) * (Math.floor(position / 2) + 1);
     const baseStyle = {
       width: `${this.circleSize}px`,
       height: `${this.circleSize}px`,
@@ -62,29 +67,33 @@ export class Coordinator {
         offsetX += this.circleSize + gap;
         return {
           ...baseStyle,
-          top: `${offsetY}px`,
-          right: `${offsetX}px`,
+          top: `${offsetY + positionOffsetY}px`,
+          right: `${offsetX + positionOffsetX}px`,
         };
       case Player.bottomRight:
         offsetX += this.circleSize + gap;
         offsetY += this.circleSize + gap;
         return {
           ...baseStyle,
-          bottom: `${offsetY}px`,
-          right: `${offsetX}px`,
+          top: `${this.width - this.circleSize - offsetY + positionOffsetY}px`,
+          right: `${offsetX + positionOffsetX}px`,
         };
       case Player.bottomLeft:
         offsetY += this.circleSize + gap;
         return {
           ...baseStyle,
-          bottom: `${offsetY}px`,
-          left: `${offsetX}px`,
+          top: `${this.width - this.circleSize - offsetY + positionOffsetY}px`,
+          right: `${
+            this.width - this.circleSize - offsetX + positionOffsetX
+          }px`,
         };
       default: // topLeft
         return {
           ...baseStyle,
-          top: `${offsetY}px`,
-          left: `${offsetX}px`,
+          top: `${offsetY + positionOffsetY}px`,
+          right: `${
+            this.width - this.circleSize - offsetX + positionOffsetX
+          }px`,
         };
     }
   }
@@ -116,7 +125,7 @@ export class Coordinator {
       case Player.topRight:
         return {
           ...baseStyle,
-          right: `${offset}px`,
+          top: `${offset}px`,
         };
       case Player.bottomRight:
         return {

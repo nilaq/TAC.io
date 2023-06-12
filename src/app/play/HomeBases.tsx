@@ -24,16 +24,16 @@ const HomeBases = () => {
           key={index}
         >
           <div className={circleBaseStyle} style={circleStyle}>
-            0
+            -1
           </div>
           <div className={circleBaseStyle} style={circleStyle}>
-            1
+            -2
           </div>
           <div className={circleBaseStyle} style={circleStyle}>
-            2
+            -3
           </div>
           <div className={circleBaseStyle} style={circleStyle}>
-            3
+            -4
           </div>
         </div>
       ))}
