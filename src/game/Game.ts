@@ -21,6 +21,63 @@ export class Game {
     this.previousDeck = [];
   }
 
+  debug() {
+    const m1 = new Marble("blue", 0);
+
+    m1.move(-4);
+    console.log(
+      "moved marble by -4 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
+    );
+    m1.move(100);
+    console.log(
+      "moved marble by 100 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
+    );
+
+    m1.move(1);
+    console.log(
+      "moved marble by 1 to " + m1.position + " current state is " + m1.getState
+    );
+
+    m1.move(-4);
+    console.log(
+      "moved marble by -4 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
+    );
+    m1.move(8, true);
+    console.log(
+      "moved marble by 8 to " + m1.position + " current state is " + m1.getState
+    );
+
+    const m2 = new Marble("green", 0);
+    m2.move(1);
+    console.log(
+      "moved m2 by 1 to " + m2.position + " current state is " + m2.getState
+    );
+
+    m2.move(-4);
+    console.log(
+      "moved m2 by -4 to " + m2.position + " current state is " + m2.getState
+    );
+
+    m2.move(62);
+    console.log(
+      "moved m2 by 62 to " + m2.position + " current state is " + m2.getState
+    );
+
+    m2.move(5);
+    console.log(
+      "moved m2 by 5 to " + m2.position + " current state is " + m2.getState
+    );
+  }
+
   startGameOfFour(userIds: string[]) {
     console.log("Game started");
 
@@ -178,7 +235,7 @@ export class Game {
           //see if one of yours is in the outer box, then it's a legal move
           if (player.hasMarbelInBase()) {
             console.log("Added to potential move due to 1");
-            addMoveThatIsLegal(legalMoves, card, marble);
+            addMoveThatIsLegal(legalMoves, card, marble, 1);
           }
         }
 
@@ -186,7 +243,7 @@ export class Game {
           //see if one of yours is in the outer box, then it's a legal move
           if (player.hasMarbelInBase()) {
             console.log("Added to potential move due to 13");
-            addMoveThatIsLegal(legalMoves, card, marble);
+            addMoveThatIsLegal(legalMoves, card, marble, 1);
           }
         }
       });
@@ -233,13 +290,14 @@ export { Deck, Player, Board, Card, Marble };
 function addMoveThatIsLegal(
   legalMoves: Map<Card, [Marble, number[]][]>,
   card: Card,
-  marble: Marble
+  marble: Marble,
+  moveMarbleBy: number
 ) {
   let priorMoves = legalMoves.get(card);
   if (priorMoves === undefined) {
     priorMoves = [[marble, []]];
   }
-  addMoveToMap(priorMoves, marble, marble.position);
+  addMoveToMap(priorMoves, marble, moveMarbleBy);
   legalMoves.set(card, priorMoves);
   card.isPlayable = true;
 }

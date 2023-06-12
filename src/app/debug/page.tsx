@@ -11,6 +11,7 @@ const TestView: React.FC = () => {
     // Create a new game
     const newGame = new Game();
     setGame(newGame);
+    newGame.debug();
 
     // Start game of four players
     newGame.startGameOfFour(["player1", "player2", "player3", "player4"]);
