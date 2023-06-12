@@ -37,7 +37,7 @@ export class Player {
     pastStack: Card[],
     legalMoves: Map<Card, Array<[Marble, number[]]>>
   ) {
-    // Ask the user for input
+    //TODO: Ask the user for input
     let cardPlayed = 0;
     if (this.hand[cardPlayed] === undefined || cardPlayed === undefined) {
       throw new Error("This card should not exists");
@@ -56,6 +56,20 @@ export class Player {
 
     pastStack.push(this.hand[cardPlayed]!);
     this.hand.splice(cardPlayed, 1);
+  }
+
+  chooseMarbleToPlay(pastStack: Card[], legalMoves: Array<[Marble, number[]]>) {
+    //TODO: Ask the user for input
+    const marbleChosen = 0;
+  }
+
+  //This function is called when the user has chosen a card and a marble they want to play with. Now they can move with the marble to any position in the move array
+  chooseMoveToPlay(pastStack: Card[], marble: Marble, moves: number[]) {
+    //TODO: Ask the user for input
+    const moveChosen = 0;
+    const currPositionOfMarble = marble.position;
+
+    //marble.move(by: moves[moveChosen], inHouse = false, finished = false)
   }
 
   chooseCardToSwap() {
