@@ -19,13 +19,13 @@ const Marbles = (props: { width: number }) => {
   );
 
   const CircleBaseStyle =
-    "absolute inline-flex items-center justify-center rounded-full bg-slate-900 text-white bg-red-600 border-1 border-red-6";
+    "absolute inline-flex items-center justify-center rounded-full text-black z-50 bg-zinc-900";
 
   const moveMarble = (positions: number) => {
     for (let i = 1; i <= positions; i++) {
       setTimeout(() => {
         if (gameState.board.marbles[0] !== undefined) {
-          if (gameState.board.marbles[0].state === MarbleState.House) {
+          if (gameState.board.marbles[0].state === MarbleState.Base) {
             gameState.board.marbles[0].moveToRing();
           } else {
             gameState.board.marbles[0].move(1);
@@ -45,7 +45,9 @@ const Marbles = (props: { width: number }) => {
           initial={{ ...coordinator.getPosition(marble) }} // initial state
           animate={coordinator.getPosition(marble)} // updated state
           key={index}
-        ></motion.div>
+        >
+          {index}
+        </motion.div>
       ))}
       <Button
         onClick={() => moveMarble(10)}

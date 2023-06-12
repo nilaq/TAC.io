@@ -37,7 +37,7 @@ export class Coordinator {
   getPosition(marble: Marble): Position {
     switch (marble.state) {
       case MarbleState.Base:
-        this.getBasePosition(marble.player, marble.position);
+        return this.getBasePosition(marble.player, marble.position);
       case MarbleState.Ring:
         return this.getPositionOnBoard(marble.position);
       case MarbleState.House:
@@ -48,10 +48,17 @@ export class Coordinator {
   }
 
   getBasePosition(player: Player, position: number): Position {
-    const gap =
-      this.radius * Math.sin((2 * Math.PI) / this.circleCount) -
-      this.circleSize;
-    const offset = (this.circleSize + gap) * (1 + position) + this.inset / 2;
+    const positionAnchors = [
+      { top: "0px", left: "0px" },
+      { top: "0px", right: "0px" },
+      { bottom: "0px", left: "0px" },
+      { bottom: "0px", right: "0px" },
+    ];
+    const gap = 8;
+    const padding = 6;
+    const offsetX = padding + (this.circleSize + gap) * (position % 2);
+    const offsetY =
+      padding + (this.circleSize + gap) * Math.floor(position / 2);
     const baseStyle = {
       width: `${this.circleSize}px`,
       height: `${this.circleSize}px`,
@@ -61,25 +68,28 @@ export class Coordinator {
       case Player.top:
         return {
           ...baseStyle,
-          top: `${offset}px`,
+          top: `${offsetY}px`,
+          left: `${offsetX}px`,
         };
       case Player.bottom:
         return {
           ...baseStyle,
-          bottom: `${offset}px`,
+          top: `${offsetY}px`,
+          right: `${offsetX}px`,
         };
       case Player.left:
         return {
           ...baseStyle,
-          left: `${offset}px`,
+          bottom: `${offsetX}px`,
+          left: `${offsetY}px`,
         };
       default:
         return {
           ...baseStyle,
-          right: `${offset}px`,
+          bottom: `${offsetX}px`,
+          right: `${offsetY}px`,
         };
     }
-  }
   }
 
   getPositionOnBoard(index: number): Position {
