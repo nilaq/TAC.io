@@ -2,16 +2,6 @@ import React, { useState } from "react";
 import Card from "./Card";
 
 const Cards = (props: { top: boolean; name: string; isTurn: boolean }) => {
-  const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
-
-  const handleCardHover = (index: number) => {
-    setHoveredCardIndex(index);
-  };
-
-  const handleCardLeave = () => {
-    setHoveredCardIndex(null);
-  };
-
   const cards = [
     { id: 1, value: "1" },
     { id: 2, value: "3" },
@@ -39,13 +29,10 @@ const Cards = (props: { top: boolean; name: string; isTurn: boolean }) => {
         {cards.map((card, index) => (
           <div
             key={card.id}
-            className={`absolute top-0 h-[150px] w-[100px] border-gray-100 transition-all duration-200`}
+            className={`duration-50 absolute top-0 h-[150px] w-[100px] cursor-pointer border-gray-100 transition-all ease-in-out hover:z-10 hover:scale-105`}
             style={{
               left: `${40 * index}px`,
-              zIndex: hoveredCardIndex === index ? 10 : 0,
             }}
-            onMouseEnter={() => handleCardHover(index)}
-            onMouseLeave={handleCardLeave}
           >
             <Card value={card.value} />
           </div>

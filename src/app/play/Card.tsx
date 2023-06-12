@@ -5,7 +5,7 @@ const Card = (props: { value: string }) => {
   const selected = false;
 
   return (
-    <div className="relative">
+    <div className="">
       <Image
         className={`h-full ${selected ? "border-2 border-black" : ""}`}
         src={`/../public/Cards/${props.value}.png`}
