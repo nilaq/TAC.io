@@ -55,6 +55,7 @@ export class Marble {
 
   //Here we assume that the move is legal and we just execute it -> we do not check where any other marbles are = dumb function
   //BY can be both positive and negative
+  //We never actively set the state to base or home here!!! -> that should be done by the controller
   move(by: number, intoHouse = false) {
     // moving from ring into house
     if (this.state === MarbleState.Finished) {

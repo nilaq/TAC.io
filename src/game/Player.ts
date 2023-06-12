@@ -69,7 +69,7 @@ export class Player {
     const moveChosen = 0;
     const currPositionOfMarble = marble.position;
 
-    //marble.move(by: moves[moveChosen], inHouse = false, finished = false)
+    marble.move(moves[moveChosen] as any);
   }
 
   chooseCardToSwap() {

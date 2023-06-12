@@ -23,59 +23,6 @@ export class Game {
 
   debug() {
     const m1 = new Marble("blue", 0);
-
-    m1.move(-4);
-    console.log(
-      "moved marble by -4 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
-    );
-    m1.move(100);
-    console.log(
-      "moved marble by 100 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
-    );
-
-    m1.move(1);
-    console.log(
-      "moved marble by 1 to " + m1.position + " current state is " + m1.getState
-    );
-
-    m1.move(-4);
-    console.log(
-      "moved marble by -4 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
-    );
-    m1.move(8, true);
-    console.log(
-      "moved marble by 8 to " + m1.position + " current state is " + m1.getState
-    );
-
-    const m2 = new Marble("green", 0);
-    m2.move(1);
-    console.log(
-      "moved m2 by 1 to " + m2.position + " current state is " + m2.getState
-    );
-
-    m2.move(-4);
-    console.log(
-      "moved m2 by -4 to " + m2.position + " current state is " + m2.getState
-    );
-
-    m2.move(62);
-    console.log(
-      "moved m2 by 62 to " + m2.position + " current state is " + m2.getState
-    );
-
-    m2.move(5);
-    console.log(
-      "moved m2 by 5 to " + m2.position + " current state is " + m2.getState
-    );
   }
 
   startGameOfFour(userIds: string[]) {
@@ -152,6 +99,12 @@ export class Game {
       //After we calculated what the user can play, we let them choose
       player.chooseCardToPlay(this.previousDeck, legalMoves);
     });
+
+    console.log("------------Every Player moved----------");
+    console.log("Board now looks like this");
+    this.board.addMarblesForPlayer(this.players);
+    console.log(this.board.marbles);
+
     if (this.players[0]?.hand.length === 0) {
       return;
       this.nextRound();
