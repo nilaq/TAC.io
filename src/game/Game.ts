@@ -1,14 +1,12 @@
 import { Board } from "./Board";
 import { Deck } from "./Deck";
 import { Player } from "./Player";
-import { Team } from "./Team";
 import { Card } from "./Card";
 import { Marble } from "./Marble";
 
 export class Game {
   board: Board;
   deck: Deck;
-  teams: Team[];
   players: Player[];
   currentPlayer: number;
   history: Board[];
@@ -16,7 +14,6 @@ export class Game {
   constructor() {
     this.board = new Board();
     this.deck = new Deck();
-    this.teams = [];
     this.players = [];
     this.history = [];
     this.currentPlayer = 0;
@@ -41,13 +38,12 @@ export class Game {
       this.players.push(player);
     }
 
-    console.log("teams created" + this.teams);
-    console.log("first round starts" + this.teams);
-
+    console.log("players created" + this.players);
     this.nextRound();
   }
 
   nextRound() {
+    // Shuffle the cards or rather create a new deck at the start of each round
     if (this.deck.cards.length == 0) {
       console.log("Shuffling new cards");
       this.deck = new Deck();
@@ -56,9 +52,11 @@ export class Game {
 
     console.log("New Round started");
     console.log("size of the card deck is " + this.deck.cards.length);
+
     // Set the current player to the first player again
     let numberOfCardsToDealPerPlayer = 5;
 
+    //Check if we need to hand out 6 cards instead of 5
     if (this.deck.cards.length == 24) {
       numberOfCardsToDealPerPlayer = 6;
     }
@@ -108,6 +106,45 @@ export class Game {
   }
 
   // Implement other methods based on your game rules
+
+
+  calculateLegalMoves(board: Board, lastCards): Hashtable {
+    // Ask the user for input
+    const cardPlayed = 0;
+
+    console.log("The user played a " + this.hand[cardPlayed]?.value);
+
+  //for every card check
+  if (card === .DEVIL){
+    cardPlayed.isPlayable = true
+  }
+  if (card === .JESTER){
+    cardPlayed.isPlayable = true
+  }
+  if (card === .ANGEL){
+    cardPlayed.isPlayable = true
+  }
+  
+  //for every marbel check
+  if (card === .FOUR){
+    //check how far last marble is or home
+  }
+  if (card === .TAC){
+    //can you move with the last played move that is not a TAC?
+  }
+  if (card === .WORRIOR){
+    //see if one of yours is in the outer box, then it's a legal move
+  }
+
+
+
+
+
+    this.hand.splice(cardPlayed, 1);
+  }
+
+
+
 }
 
-export { Deck, Player, Team, Board, Card, Marble };
+export { Deck, Player, Board, Card, Marble };

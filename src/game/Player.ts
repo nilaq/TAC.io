@@ -1,6 +1,6 @@
+import { Board } from "./Board";
 import { Card } from "./Card";
 import { Marble } from "./Marble";
-import { Team } from "./Team";
 
 export class Player {
   userId: string;
@@ -28,11 +28,27 @@ export class Player {
     this.hand.splice(cardPlayed, 1);
   }
 
-  calculateLegalMoves() {
+  calculateLegalMoves(board: Board, lastCards) {
     // Ask the user for input
     const cardPlayed = 0;
 
     console.log("The user played a " + this.hand[cardPlayed]?.value);
+
+  //for every card check
+  if (card === .DEVIL || card === .JESTER || card === .ANGEL || card === .WORRIOR){
+    cardPlayed.isPlayable = true
+  }
+  if (card === .TAC){
+    //check how far last marble is or home
+  }
+  //for every marbel check
+  if (card === .FOUR){
+    //check how far last marble is or home
+  }
+
+
+
+
 
     this.hand.splice(cardPlayed, 1);
   }

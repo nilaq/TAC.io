@@ -31,6 +31,7 @@ export class Deck {
       [CardValue.TAC]: 4,
     };
 
+    //This pushes all cards assigned above into an array
     for (const cardValue of Object.values(CardValue)) {
       for (let i = 0; i < (cardCounts[cardValue as any] || 0); i++) {
         this.cards.push(new Card(cardValue as any));
@@ -39,6 +40,7 @@ export class Deck {
     this.shuffle();
   }
 
+  //Shuffles the stack of cards
   shuffle(): void {
     for (let i = this.cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -46,6 +48,7 @@ export class Deck {
     }
   }
 
+  //This removes the top card from the deck
   drawOneCard() {
     if (this.cards.length > 0) {
       return this.cards.shift();
