@@ -9,7 +9,6 @@ export enum CardValue {
   EIGHT = 8,
   NINE = 9,
   TEN = 10,
-  ELEVEN = 0,
   TWELVE = 12,
   THIRTEEN = 13,
   TRICKSER = -1,
