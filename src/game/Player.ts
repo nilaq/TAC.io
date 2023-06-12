@@ -1,6 +1,6 @@
 import { Board } from "./Board";
-import { Card } from "./Card";
-import { Marble } from "./Marble";
+import { Card, CardValue } from "./Card";
+import { Marble, MarbleState } from "./Marble";
 
 export class Player {
   userId: string;
@@ -8,67 +8,53 @@ export class Player {
   marbles: Marble[];
   hand: Card[];
   isFinished: boolean;
-<<<<<<< HEAD
   canComeOut: boolean;
-
-  constructor(userId: string, team: number) {
-    this.team = -1;
-    this.marbles = [new Marble(), new Marble(), new Marble(), new Marble()]; // Assuming each player starts with 4 marbles
-    this.hand = []; // This will be filled when game starts
-    this.isFinished = false; // Initially, a player is not finished
-    this.userId = userId;
-    this.canComeOut = false;
-=======
   color: string;
   startPosition: number;
 
   constructor(
     userId: string,
-    team: Team,
+    team: number,
     color: string,
     startPosition: number
   ) {
-    this.team = team;
-    this.marbles = []; // marbles are added when game starts
+    this.team = -1;
+    this.marbles = [
+      new Marble(color, startPosition),
+      new Marble(color, startPosition),
+      new Marble(color, startPosition),
+      new Marble(color, startPosition),
+    ]; // Assuming each player starts with 4 marbles
     this.hand = []; // This will be filled when game starts
     this.isFinished = false; // Initially, a player is not finished
     this.userId = userId;
+    this.canComeOut = false;
     this.color = color;
     this.startPosition = startPosition;
->>>>>>> 5b4981b543044fad81f5dc7302e407ee2be8fee3
   }
 
-  chooseCardToPlay() {
+  chooseCardToPlay(
+    pastStack: Card[],
+    legalMoves: Map<Card, Array<[Marble, number[]]>>
+  ) {
     // Ask the user for input
-    const cardPlayed = 0;
+    let cardPlayed = 0;
+    if (this.hand[cardPlayed] === undefined || cardPlayed === undefined) {
+      throw new Error("This card should not exists");
+    }
+
+    //TODO: Just for now, the player plays the first card on their hand that they can
+    for (let i = 0; i < this.hand.length; i++) {
+      if (legalMoves.has(this.hand[i]!)) {
+        cardPlayed = i;
+      }
+    }
 
     console.log("The user played a " + this.hand[cardPlayed]?.value);
 
-    this.hand.splice(cardPlayed, 1);
-  }
+    //calculate legal, if no legal, all are legal but just discarded
 
-  calculateLegalMoves(board: Board, lastCards) {
-    // Ask the user for input
-    const cardPlayed = 0;
-
-    console.log("The user played a " + this.hand[cardPlayed]?.value);
-
-  //for every card check
-  if (card === .DEVIL || card === .JESTER || card === .ANGEL || card === .WORRIOR){
-    cardPlayed.isPlayable = true
-  }
-  if (card === .TAC){
-    //check how far last marble is or home
-  }
-  //for every marbel check
-  if (card === .FOUR){
-    //check how far last marble is or home
-  }
-
-
-
-
-
+    pastStack.push(this.hand[cardPlayed]!);
     this.hand.splice(cardPlayed, 1);
   }
 
@@ -85,5 +71,21 @@ export class Player {
       if (card.value === 1 || card.value === 13) this.canComeOut = true;
       return;
     });
+  }
+
+  isMarbelInRing(): boolean {
+    this.marbles.forEach((marble) => {
+      if (
+        marble.getState === MarbleState.Ring ||
+        marble.getState === MarbleState.RingMoved
+      ) {
+        return true;
+      }
+    });
+    return false;
+  }
+
+  hasMarbelInBase(): boolean {
+    return this.marbles.some((marble) => marble.getState === MarbleState.Base);
   }
 }

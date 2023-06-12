@@ -20,7 +20,6 @@ export class Deck {
       [CardValue.EIGHT]: 7,
       [CardValue.NINE]: 7,
       [CardValue.TEN]: 7,
-      [CardValue.ELEVEN]: 0,
       [CardValue.TWELVE]: 7,
       [CardValue.THIRTEEN]: 9,
       [CardValue.TRICKSER]: 7,
