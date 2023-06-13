@@ -1,24 +1,35 @@
 import React, { useState } from "react";
 import Card from "./Card";
 
+interface Card {
+  id: number;
+  value: string;
+  selected: boolean;
+}
+
 const Cards = (props: { top: boolean; name: string; isTurn: boolean }) => {
-  const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
+  const [cards, setCards] = React.useState<Card[]>([
+    { id: 1, value: "1", selected: false },
+    { id: 2, value: "3", selected: false },
+    { id: 3, value: "8", selected: true },
+    { id: 4, value: "Trickser", selected: false },
+    { id: 5, value: "Teufel", selected: false },
+  ]);
 
-  const handleCardHover = (index: number) => {
-    setHoveredCardIndex(index);
+  const selectCard = (selectedCard: Card) => {
+    const cardsCopy = [...cards];
+    cardsCopy.forEach(
+      (card) => (card.selected = card.id === selectedCard.id && !card.selected)
+    );
+    setCards(cardsCopy);
   };
 
-  const handleCardLeave = () => {
-    setHoveredCardIndex(null);
+  const removeCard = (removedCard: Card) => {
+    const cardsCopy = [...cards];
+    const index = cardsCopy.findIndex((card) => card.id === removedCard.id);
+    cardsCopy.splice(index, 1);
+    setCards(cardsCopy);
   };
-
-  const cards = [
-    { id: 1, value: "1" },
-    { id: 2, value: "3" },
-    { id: 3, value: "8" },
-    { id: 4, value: "Trickser" },
-    { id: 5, value: "Teufel" },
-  ];
 
   const name = (
     <div className="flex items-center justify-center gap-3">
@@ -30,25 +41,18 @@ const Cards = (props: { top: boolean; name: string; isTurn: boolean }) => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-between gap-3">
+    <div className="flex w-full flex-col items-center justify-start gap-6">
       {props.top && name}
-      <div
-        className={`justify-between" style="left: 20px relative flex h-[150px] w-[300px]`}
-        style={{ left: `20px` }}
-      >
+      <div className={`relative flex h-[150px] w-[240px] justify-between`}>
         {cards.map((card, index) => (
-          <div
+          <Card
             key={card.id}
-            className={`absolute top-0 h-[150px] w-[100px] border-gray-100 transition-all duration-200`}
-            style={{
-              left: `${40 * index}px`,
-              zIndex: hoveredCardIndex === index ? 10 : 0,
-            }}
-            onMouseEnter={() => handleCardHover(index)}
-            onMouseLeave={handleCardLeave}
-          >
-            <Card value={card.value} />
-          </div>
+            value={card.value}
+            selected={card.selected}
+            left={`${40 * index}px`}
+            onClick={() => selectCard(card)}
+            onDoubleClick={() => removeCard(card)}
+          />
         ))}
       </div>
       {!props.top && name}
