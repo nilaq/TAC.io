@@ -10,10 +10,10 @@ interface Position {
 }
 
 export enum Player {
-  right,
-  left,
-  top,
-  bottom,
+  topRight,
+  bottomRight,
+  bottomLeft,
+  topLeft,
 }
 
 export class Coordinator {
@@ -21,6 +21,7 @@ export class Coordinator {
   private circleCount: number;
   private inset: number;
   private radius: number;
+  private width: number;
 
   constructor(
     width: number,
@@ -32,6 +33,7 @@ export class Coordinator {
     this.circleCount = circleCount;
     this.inset = inset;
     this.radius = (width - inset - circleSize) / 2;
+    this.width = width;
   }
 
   getPosition(marble: Marble): Position {
@@ -39,55 +41,59 @@ export class Coordinator {
       case MarbleState.Base:
         return this.getBasePosition(marble.player, marble.position);
       case MarbleState.Ring:
+      case MarbleState.RingMoved:
         return this.getPositionOnBoard(marble.position);
       case MarbleState.House:
-        return this.getHousePosition(marble.player, marble.position);
       case MarbleState.Finished:
         return this.getHousePosition(marble.player, marble.position);
     }
   }
 
   getBasePosition(player: Player, position: number): Position {
-    const positionAnchors = [
-      { top: "0px", left: "0px" },
-      { top: "0px", right: "0px" },
-      { bottom: "0px", left: "0px" },
-      { bottom: "0px", right: "0px" },
-    ];
     const gap = 8;
     const padding = 6;
-    const offsetX = padding + (this.circleSize + gap) * (position % 2);
-    const offsetY =
-      padding + (this.circleSize + gap) * Math.floor(position / 2);
+    let offsetX = padding;
+    let offsetY = padding;
+    const positionOffsetX = -(gap + this.circleSize) * ((position % 2) + 1);
+    const positionOffsetY =
+      -(gap + this.circleSize) * (Math.floor(position / 2) + 1);
     const baseStyle = {
       width: `${this.circleSize}px`,
       height: `${this.circleSize}px`,
     };
 
     switch (player) {
-      case Player.top:
+      case Player.topRight:
+        offsetX += this.circleSize + gap;
         return {
           ...baseStyle,
-          top: `${offsetY}px`,
-          left: `${offsetX}px`,
+          top: `${offsetY + positionOffsetY}px`,
+          right: `${offsetX + positionOffsetX}px`,
         };
-      case Player.bottom:
+      case Player.bottomRight:
+        offsetX += this.circleSize + gap;
+        offsetY += this.circleSize + gap;
         return {
           ...baseStyle,
-          top: `${offsetY}px`,
-          right: `${offsetX}px`,
+          top: `${this.width - this.circleSize - offsetY + positionOffsetY}px`,
+          right: `${offsetX + positionOffsetX}px`,
         };
-      case Player.left:
+      case Player.bottomLeft:
+        offsetY += this.circleSize + gap;
         return {
           ...baseStyle,
-          bottom: `${offsetX}px`,
-          left: `${offsetY}px`,
+          top: `${this.width - this.circleSize - offsetY + positionOffsetY}px`,
+          right: `${
+            this.width - this.circleSize - offsetX + positionOffsetX
+          }px`,
         };
-      default:
+      default: // topLeft
         return {
           ...baseStyle,
-          bottom: `${offsetX}px`,
-          right: `${offsetY}px`,
+          top: `${offsetY + positionOffsetY}px`,
+          right: `${
+            this.width - this.circleSize - offsetX + positionOffsetX
+          }px`,
         };
     }
   }
@@ -116,25 +122,25 @@ export class Coordinator {
     };
 
     switch (player) {
-      case Player.top:
+      case Player.topRight:
         return {
           ...baseStyle,
           top: `${offset}px`,
         };
-      case Player.bottom:
+      case Player.bottomRight:
         return {
           ...baseStyle,
           bottom: `${offset}px`,
         };
-      case Player.left:
-        return {
-          ...baseStyle,
-          left: `${offset}px`,
-        };
-      default:
+      case Player.bottomLeft:
         return {
           ...baseStyle,
           right: `${offset}px`,
+        };
+      default: // topLeft
+        return {
+          ...baseStyle,
+          left: `${offset}px`,
         };
     }
   }

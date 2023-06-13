@@ -41,15 +41,20 @@ const Circles = ({ width }: CirclesProps) => {
     </Circle>
   ));
 
-  const players = [Player.top, Player.right, Player.bottom, Player.left];
+  const players = [
+    Player.bottomLeft,
+    Player.bottomRight,
+    Player.topLeft,
+    Player.topRight,
+  ];
   const houseCircles = players.flatMap((player) =>
     Array.from({ length: 4 }, (_, i) => (
       <Circle
         className={CircleBaseStyle}
-        style={coordinator.getBasePosition(player, i)}
+        style={coordinator.getHousePosition(player, i)}
         key={i}
       >
-        {i}
+        {i + 64}
       </Circle>
     ))
   );

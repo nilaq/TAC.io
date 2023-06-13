@@ -9,21 +9,23 @@ export enum MarbleState {
 }
 
 export class Marble {
-  private state: MarbleState;
+  private _state: MarbleState;
   private _position: number; // on the board relative to player's start position
   private _color: string;
   private offset: number; // offset from the start position due to player starting postition (e.g. player 2 has offset: 16)
 
-  constructor(color: string, offset: number) {
-    this.state = MarbleState.Base;
+  constructor(color: string, offset: number, basePosition = -1) {
+    this._state = MarbleState.Base;
     //every marble starts with -1 -> we do not need assignement in the house
-    this._position = -1;
+    this._position = basePosition;
     this._color = color;
     this.offset = offset;
   }
 
   get position() {
-    return this._position + this.offset;
+    return (
+      this._position + (this._state === MarbleState.Base ? 0 : this.offset)
+    );
   }
 
   get color() {
@@ -31,25 +33,25 @@ export class Marble {
   }
 
   get getState(): MarbleState {
-    return this.state;
+    return this._state;
   }
 
   get currentlyInGame() {
     return (
-      this.state === MarbleState.Ring || this.state === MarbleState.RingMoved
+      this._state === MarbleState.Ring || this._state === MarbleState.RingMoved
     );
   }
 
   get player() {
     switch (this.offset) {
       case 0:
-        return Player.bottom;
+        return Player.bottomRight;
       case 16:
-        return Player.left;
+        return Player.bottomLeft;
       case 32:
-        return Player.top;
-      default:
-        return Player.right;
+        return Player.topLeft;
+      default: // top right
+        return Player.topRight;
     }
   }
 
@@ -58,21 +60,21 @@ export class Marble {
   //We never actively set the state to base or home here!!! -> that should be done by the controller
   move(by: number, intoHouse = false) {
     // moving from ring into house
-    if (this.state === MarbleState.Finished) {
+    if (this._state === MarbleState.Finished) {
       throw new Error("Cannot move finished marble!");
-    } else if (this.state === MarbleState.Base && by === 1) {
+    } else if (this._state === MarbleState.Base && by === 1) {
       this._position = 0;
-      this.state = MarbleState.Ring;
+      this._state = MarbleState.Ring;
     } else if (intoHouse) {
       //This happens when we go four back into the house
       if (by < 0) {
-        //watch out -> here we turn current position negative and add 67 to determine place in house
-        this._position = -1 * this._position + 67;
+        //watch out -> here we turn current position negative and add 68 to determine place in house
+        this._position = -1 * this._position + 68;
       } else {
         //we have to subtract - 1 to account for the zero
-        this._position += by - 1;
+        this._position += by;
       }
-      if (this._position > 67) {
+      if (this._position > 68) {
         throw new Error(
           "Board out of Bounds. Tried to move up in the house too far"
         );
@@ -80,9 +82,9 @@ export class Marble {
     }
     // moving on the ring
     else if (
-      this.state === MarbleState.Ring ||
-      this.state === MarbleState.RingMoved ||
-      this.state === MarbleState.House
+      this._state === MarbleState.Ring ||
+      this._state === MarbleState.RingMoved ||
+      this._state === MarbleState.House
     ) {
       this._position += by;
       //if the user cannot go in the house but moves four back
@@ -93,16 +95,10 @@ export class Marble {
       if (this._position > 63) {
         this._position -= 64;
       }
-      this.state = MarbleState.RingMoved;
+      this._state = MarbleState.RingMoved;
     } else {
       console.log("ILLEGAL MOVE WAS GIVEN: MARBLE DID NOT MOVE");
     }
     console.log("The marble just moved to " + this._position);
-  }
-
-  // from home base to ring at starting position
-  moveToRing() {
-    this.state = MarbleState.Ring;
-    this._position = 0;
   }
 }

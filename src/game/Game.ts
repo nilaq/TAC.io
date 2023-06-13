@@ -32,6 +32,59 @@ export class Game {
 
   debug() {
     const m1 = new Marble("blue", 0);
+
+    m1.move(-4);
+    console.log(
+      "moved marble by -4 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
+    );
+    m1.move(100);
+    console.log(
+      "moved marble by 100 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
+    );
+
+    m1.move(1);
+    console.log(
+      "moved marble by 1 to " + m1.position + " current state is " + m1.getState
+    );
+
+    m1.move(-4);
+    console.log(
+      "moved marble by -4 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
+    );
+    m1.move(8, true);
+    console.log(
+      "moved marble by 8 to " + m1.position + " current state is " + m1.getState
+    );
+
+    const m2 = new Marble("green", 0);
+    m2.move(1);
+    console.log(
+      "moved m2 by 1 to " + m2.position + " current state is " + m2.getState
+    );
+
+    m2.move(-4);
+    console.log(
+      "moved m2 by -4 to " + m2.position + " current state is " + m2.getState
+    );
+
+    m2.move(62);
+    console.log(
+      "moved m2 by 62 to " + m2.position + " current state is " + m2.getState
+    );
+
+    m2.move(5);
+    console.log(
+      "moved m2 by 5 to " + m2.position + " current state is " + m2.getState
+    );
   }
 
   startGameOfFour(userIds: string[]) {
@@ -50,10 +103,10 @@ export class Game {
 
       //Here we could add logic for splitting up teams
       const colors = [
-        "bg-red-500",
-        "bg-blue-500",
-        "bg-green-500",
-        "bg-black-500",
+        "#ef4444", // red
+        "#f59e0b", // yellow
+        "#0ea5e9", // blue
+        "#84cc16", // green,
       ];
       const player = new Player(
         userId,
@@ -65,6 +118,7 @@ export class Game {
     }
 
     console.log("players created" + this.players);
+
     this.nextRound();
   }
 
