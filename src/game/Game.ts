@@ -238,14 +238,22 @@ export class Game {
       //remember player has isMarbelInRing
 
       player.marbles.forEach((marble) => {
-        console.log(
-          "Marble " +
-            JSON.stringify(marble) +
-            " of player " +
-            player.userId +
-            " has a marble in front of it with a distance " +
-            this.getValueOfMarbleBeforeInRing(marble, player)
-        );
+        if (
+          marble.getState === MarbleState.Ring ||
+          marble.getState === MarbleState.RingMoved
+        ) {
+          console.log(
+            "Marble " +
+              JSON.stringify(marble) +
+              " of player " +
+              player.userId +
+              " has a marble behind it with a distance: " +
+              this.getValueOfMarbleBeforeInRing(marble, player) +
+              " and has a marble in front of it with a distance: " +
+              this.getValueOfMarbleAfterInRing(marble, player)
+          );
+        }
+
         //get Value of marble before this one
         //get Value of marble after this one -> then you know how many you can walk in front or back
 
@@ -265,6 +273,30 @@ export class Game {
           if (player.hasMarbelInBase()) {
             console.log("Added the 1 to the potential moves of the player");
             addMoveToOurLegalStructure(legalMoves, card, marble, [1]);
+          }
+        }
+
+        //All black cards!!!
+        if (
+          card.value === CardValue.TWO ||
+          card.value === CardValue.THREE ||
+          card.value === CardValue.FIVE ||
+          card.value === CardValue.SIX ||
+          card.value === CardValue.NINE ||
+          card.value === CardValue.TEN ||
+          card.value === CardValue.TWELVE
+        ) {
+          console.log(
+            "Added the" + card.value + " to the potential moves of the player"
+          );
+          if (
+            //Check if no marble is after the current marble. Also TODO: Add here the house behavior
+            this.getValueOfMarbleAfterInRing(marble, player) <=
+            card.value.valueOf()
+          ) {
+            addMoveToOurLegalStructure(legalMoves, card, marble, [
+              card.value.valueOf(),
+            ]);
           }
         }
 
@@ -290,26 +322,51 @@ export class Game {
 
     return legalMoves;
   }
-  //getValueOfMarbleBefore
 
+  //getValueOfMarbleBefore
   getValueOfMarbleBeforeInRing(marble: Marble, currentPlayer: Player): number {
     let closestMarbleBehind = Infinity;
     this.players.forEach((player) => {
-      if (player !== currentPlayer) {
-        player.marbles.forEach((otherMarble) => {
-          // We only care about marbles behind the current marble.
-
+      player.marbles.forEach((otherMarble) => {
+        // We only care about marbles behind the current marble.
+        if (
+          otherMarble.getState === MarbleState.Ring ||
+          otherMarble.getState === MarbleState.RingMoved
+        ) {
           let distance = (marble.position - otherMarble.position) % 64;
-          if (distance < 0) {
+          if (distance <= 0) {
             distance += 64;
           }
           if (distance < closestMarbleBehind) {
             closestMarbleBehind = distance;
           }
-        });
-      }
+        }
+      });
     });
-    return closestMarbleBehind === Infinity ? -1 : closestMarbleBehind;
+    return closestMarbleBehind;
+  }
+
+  //getValueOfMarbleAfter
+  getValueOfMarbleAfterInRing(marble: Marble, currentPlayer: Player): number {
+    let closestMarbleInFront = Infinity;
+    this.players.forEach((player) => {
+      player.marbles.forEach((otherMarble) => {
+        // We only care about marbles behind the current marble.
+        if (
+          otherMarble.getState === MarbleState.Ring ||
+          otherMarble.getState === MarbleState.RingMoved
+        ) {
+          let distance = (otherMarble.position - marble.position) % 64;
+          if (distance <= 0) {
+            distance += 64;
+          }
+          if (distance < closestMarbleInFront) {
+            closestMarbleInFront = distance;
+          }
+        }
+      });
+    });
+    return closestMarbleInFront;
   }
 }
 
