@@ -4,6 +4,13 @@ import { Player } from "./Player";
 import { Card, CardValue } from "./Card";
 import { Marble, MarbleState } from "./Marble";
 
+type ToHouse = boolean;
+type Move = number;
+type MarbleMoveTuple = [[Marble, Move, ToHouse]];
+type MoveCombinations = MarbleMoveTuple[];
+
+type legalPossibilities = Map<Card, MoveCombinations>;
+
 export class Game {
   board: Board;
   deck: Deck;
@@ -11,6 +18,7 @@ export class Game {
   currentPlayer: number;
   history: Board[];
   previousDeck: Card[];
+  gameIterations: number;
 
   constructor() {
     this.board = new Board();
@@ -19,7 +27,7 @@ export class Game {
     this.history = [];
     this.currentPlayer = 0;
     this.previousDeck = [];
-    this.startGameOfFour(["1", "2", "3", "4"]);
+    this.gameIterations = 0;
   }
 
   debug() {
@@ -27,46 +35,55 @@ export class Game {
 
     m1.move(-4);
     console.log(
-      "moved marble by -4 to " + m1.position + " current state is " + m1.state
+      "moved marble by -4 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
     );
     m1.move(100);
     console.log(
-      "moved marble by 100 to " + m1.position + " current state is " + m1.state
+      "moved marble by 100 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
     );
 
     m1.move(1);
     console.log(
-      "moved marble by 1 to " + m1.position + " current state is " + m1.state
+      "moved marble by 1 to " + m1.position + " current state is " + m1.getState
     );
 
     m1.move(-4);
     console.log(
-      "moved marble by -4 to " + m1.position + " current state is " + m1.state
+      "moved marble by -4 to " +
+        m1.position +
+        " current state is " +
+        m1.getState
     );
     m1.move(8, true);
     console.log(
-      "moved marble by 8 to " + m1.position + " current state is " + m1.state
+      "moved marble by 8 to " + m1.position + " current state is " + m1.getState
     );
 
     const m2 = new Marble("green", 0);
     m2.move(1);
     console.log(
-      "moved m2 by 1 to " + m2.position + " current state is " + m2.state
+      "moved m2 by 1 to " + m2.position + " current state is " + m2.getState
     );
 
     m2.move(-4);
     console.log(
-      "moved m2 by -4 to " + m2.position + " current state is " + m2.state
+      "moved m2 by -4 to " + m2.position + " current state is " + m2.getState
     );
 
     m2.move(62);
     console.log(
-      "moved m2 by 62 to " + m2.position + " current state is " + m2.state
+      "moved m2 by 62 to " + m2.position + " current state is " + m2.getState
     );
 
     m2.move(5);
     console.log(
-      "moved m2 by 5 to " + m2.position + " current state is " + m2.state
+      "moved m2 by 5 to " + m2.position + " current state is " + m2.getState
     );
   }
 
@@ -102,11 +119,6 @@ export class Game {
 
     console.log("players created" + this.players);
 
-    // Add the marbles for each player to the board
-    this.players.forEach((player) => {
-      this.board.addMarblesForPlayer(player);
-    });
-
     this.nextRound();
   }
 
@@ -137,7 +149,11 @@ export class Game {
       player.calculateIfCanComeOut();
       console.log(player.userId + " can come out: " + player.canComeOut);
     });
-    this.playersMoving();
+
+    this.gameIterations++;
+    if (this.gameIterations <= 6) {
+      this.playersMoving();
+    }
   }
 
   playersMoving() {
@@ -151,15 +167,26 @@ export class Game {
         this.previousDeck
       );
 
-      console.log(player.userId + " has " + JSON.stringify(player.hand));
+      console.log(
+        "Deck of " + player.userId + " is " + JSON.stringify(player.hand)
+      );
       //After we calculated what the user can play, we let them choose
-      player.chooseCardToPlay(this.previousDeck, legalMoves);
+      player.chooseWhatToPlay(this.previousDeck, legalMoves);
     });
+
+    console.log("------------Every Player moved----------");
+    console.log("Board now looks like this");
+    this.board.addMarblesForPlayer(this.players);
+    console.log(this.board.marbles);
+
     if (this.players[0]?.hand.length === 0) {
       return;
       this.nextRound();
     }
+    this.gameIterations++;
+    //if (this.gameIterations < 30) {
     this.playersMoving();
+    //}
   }
 
   swapCards() {
@@ -190,17 +217,8 @@ export class Game {
     player: Player,
     board: Board,
     lastCards: Card[]
-  ): //looks crazy but an example for this is:
-  /*[
-    [marble1, [5, 10, 15]],
-    [marble2, [10, 20]],
-    [marble3, [15, 30, 45]]
-  ]*/
-
-  Map<Card, Array<[Marble, number[]]>> {
-    // Ask the user for input
-    const cardPlayed = 0;
-    const legalMoves = new Map<Card, Array<[Marble, number[]]>>();
+  ): legalPossibilities {
+    const legalMoves = new Map<Card, MoveCombinations>();
 
     player.hand.forEach((card) => {
       //resets the card for the following round
@@ -220,6 +238,22 @@ export class Game {
       //remember player has isMarbelInRing
 
       player.marbles.forEach((marble) => {
+        if (
+          marble.getState === MarbleState.Ring ||
+          marble.getState === MarbleState.RingMoved
+        ) {
+          console.log(
+            "Marble " +
+              JSON.stringify(marble) +
+              " of player " +
+              player.userId +
+              " has a marble behind it with a distance: " +
+              this.getValueOfMarbleBeforeInRing(marble, player) +
+              " and has a marble in front of it with a distance: " +
+              this.getValueOfMarbleAfterInRing(marble, player)
+          );
+        }
+
         //get Value of marble before this one
         //get Value of marble after this one -> then you know how many you can walk in front or back
 
@@ -237,16 +271,40 @@ export class Game {
         if (card.value === CardValue.ONE) {
           //see if one of yours is in the outer box, then it's a legal move
           if (player.hasMarbelInBase()) {
-            console.log("Added to potential move due to 1");
-            addMoveThatIsLegal(legalMoves, card, marble, 1);
+            console.log("Added the 1 to the potential moves of the player");
+            addMoveToOurLegalStructure(legalMoves, card, marble, [1]);
+          }
+        }
+
+        //All black cards!!!
+        if (
+          card.value === CardValue.TWO ||
+          card.value === CardValue.THREE ||
+          card.value === CardValue.FIVE ||
+          card.value === CardValue.SIX ||
+          card.value === CardValue.NINE ||
+          card.value === CardValue.TEN ||
+          card.value === CardValue.TWELVE
+        ) {
+          console.log(
+            "Added the" + card.value + " to the potential moves of the player"
+          );
+          if (
+            //Check if no marble is after the current marble. Also TODO: Add here the house behavior
+            this.getValueOfMarbleAfterInRing(marble, player) <=
+            card.value.valueOf()
+          ) {
+            addMoveToOurLegalStructure(legalMoves, card, marble, [
+              card.value.valueOf(),
+            ]);
           }
         }
 
         if (card.value === CardValue.THIRTEEN) {
           //see if one of yours is in the outer box, then it's a legal move
           if (player.hasMarbelInBase()) {
-            console.log("Added to potential move due to 13");
-            addMoveThatIsLegal(legalMoves, card, marble, 1);
+            console.log("Added the 13 to the potential moves of the player");
+            addMoveToOurLegalStructure(legalMoves, card, marble, [1]);
           }
         }
       });
@@ -255,69 +313,91 @@ export class Game {
       console.log(
         "Player " +
           player.userId +
-          " has with " +
-          card +
+          " has with the card: " +
+          card.value +
           " this move available: " +
-          legalMoves.get(card)
+          JSON.stringify(legalMoves.get(card))
       );
     });
 
     return legalMoves;
   }
 
-  makeMove(board: Board, lastCards: [Card], card: Card) {}
-
   //getValueOfMarbleBefore
-
-  getValueOfMarbleBeforeInRing(marble: Marble): number {
+  getValueOfMarbleBeforeInRing(marble: Marble, currentPlayer: Player): number {
     let closestMarbleBehind = Infinity;
     this.players.forEach((player) => {
       player.marbles.forEach((otherMarble) => {
         // We only care about marbles behind the current marble.
-        if (otherMarble.position < marble.position) {
-          const distance = (marble.position - otherMarble.position) % 64;
+        if (
+          otherMarble.getState === MarbleState.Ring ||
+          otherMarble.getState === MarbleState.RingMoved
+        ) {
+          let distance = (marble.position - otherMarble.position) % 64;
+          if (distance <= 0) {
+            distance += 64;
+          }
           if (distance < closestMarbleBehind) {
             closestMarbleBehind = distance;
           }
         }
       });
     });
-    return closestMarbleBehind === Infinity ? -1 : closestMarbleBehind;
+    return closestMarbleBehind;
   }
 
-  //TODO getValueOfMarbleAfter
+  //getValueOfMarbleAfter
+  getValueOfMarbleAfterInRing(marble: Marble, currentPlayer: Player): number {
+    let closestMarbleInFront = Infinity;
+    this.players.forEach((player) => {
+      player.marbles.forEach((otherMarble) => {
+        // We only care about marbles behind the current marble.
+        if (
+          otherMarble.getState === MarbleState.Ring ||
+          otherMarble.getState === MarbleState.RingMoved
+        ) {
+          let distance = (otherMarble.position - marble.position) % 64;
+          if (distance <= 0) {
+            distance += 64;
+          }
+          if (distance < closestMarbleInFront) {
+            closestMarbleInFront = distance;
+          }
+        }
+      });
+    });
+    return closestMarbleInFront;
+  }
 }
+
+//TODO getValueOfMarbleAfter
 
 export { Deck, Player, Board, Card, Marble };
 
-function addMoveThatIsLegal(
-  legalMoves: Map<Card, [Marble, number[]][]>,
+function addMoveToOurLegalStructure(
+  legalMoves: legalPossibilities,
   card: Card,
   marble: Marble,
-  moveMarbleBy: number
+  moves: number[],
+  toHouse = false
 ) {
   let priorMoves = legalMoves.get(card);
   if (priorMoves === undefined) {
-    priorMoves = [[marble, []]];
+    priorMoves = [];
   }
-  addMoveToMap(priorMoves, marble, moveMarbleBy);
+  addMoveToMap(priorMoves, marble, moves, toHouse);
   legalMoves.set(card, priorMoves);
   card.isPlayable = true;
 }
 
 function addMoveToMap(
-  moves: Array<[Marble, number[]]>,
+  moveCombos: MoveCombinations,
   marble: Marble,
-  move: number
+  moves: number[],
+  toHouse: boolean
 ) {
-  // Find the element in the array that corresponds to the marble
-  const element = moves.find(([m, _]) => m === marble);
-
-  if (element) {
-    // If the marble is already in the array, add the move to its list of moves
-    element[1].push(move);
-  } else {
-    // If the marble is not in the array, add a new element for it
-    moves.push([marble, [move]]);
-  }
+  moves.forEach((moveBy) => {
+    // Add a new element for the marble with the new move
+    moveCombos.push([[marble, moveBy, toHouse]]);
+  });
 }

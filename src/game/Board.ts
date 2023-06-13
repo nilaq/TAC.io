@@ -8,13 +8,12 @@ export class Board {
     this.marbles = [];
   }
 
-  addMarblesForPlayer(player: Player) {
-    for (let i = 1; i <= 4; i++) {
-      const marble = new Marble(player.color, player.startPosition, -i);
-      this.marbles.push(marble);
-      player.marbles.push(marble);
-    }
+  addMarblesForPlayer(players: Player[]) {
+    this.marbles = [];
+    players.forEach((player) => {
+      player.marbles.forEach((marble) => {
+        this.marbles.push(marble);
+      });
+    });
   }
-
-  // Implement other methods based on your game rules
 }
