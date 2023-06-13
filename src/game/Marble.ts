@@ -97,6 +97,7 @@ export class Marble {
     } else {
       console.log("ILLEGAL MOVE WAS GIVEN: MARBLE DID NOT MOVE");
     }
+    console.log("The marble just moved to " + this._position);
   }
 
   // from home base to ring at starting position
