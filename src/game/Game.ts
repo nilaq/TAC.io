@@ -242,6 +242,29 @@ export class Game {
           marble.getState === MarbleState.Ring ||
           marble.getState === MarbleState.RingMoved
         ) {
+          //All black cards!!!
+          if (
+            card.value === CardValue.TWO ||
+            card.value === CardValue.THREE ||
+            card.value === CardValue.FIVE ||
+            card.value === CardValue.SIX ||
+            card.value === CardValue.NINE ||
+            card.value === CardValue.TEN ||
+            card.value === CardValue.TWELVE
+          ) {
+            console.log(
+              "Added the" + card.value + " to the potential moves of the player"
+            );
+            if (
+              //Check if no marble is after the current marble. Also TODO: Add here the house behavior
+              card.value.valueOf() <=
+              this.getValueOfMarbleAfterInRing(marble, player)
+            ) {
+              addMoveToOurLegalStructure(legalMoves, card, marble, [
+                card.value.valueOf(),
+              ]);
+            }
+          }
           console.log(
             "Marble " +
               JSON.stringify(marble) +
@@ -273,30 +296,6 @@ export class Game {
           if (player.hasMarbelInBase()) {
             console.log("Added the 1 to the potential moves of the player");
             addMoveToOurLegalStructure(legalMoves, card, marble, [1]);
-          }
-        }
-
-        //All black cards!!!
-        if (
-          card.value === CardValue.TWO ||
-          card.value === CardValue.THREE ||
-          card.value === CardValue.FIVE ||
-          card.value === CardValue.SIX ||
-          card.value === CardValue.NINE ||
-          card.value === CardValue.TEN ||
-          card.value === CardValue.TWELVE
-        ) {
-          console.log(
-            "Added the" + card.value + " to the potential moves of the player"
-          );
-          if (
-            //Check if no marble is after the current marble. Also TODO: Add here the house behavior
-            this.getValueOfMarbleAfterInRing(marble, player) <=
-            card.value.valueOf()
-          ) {
-            addMoveToOurLegalStructure(legalMoves, card, marble, [
-              card.value.valueOf(),
-            ]);
           }
         }
 
