@@ -28,6 +28,8 @@ export class Game {
     this.currentPlayer = 0;
     this.previousDeck = [];
     this.gameIterations = 0;
+    // only for debugging rn, this should be done by the controller later on when starting the game
+    this.startGameOfFour(["1", "2", "3", "4"]);
   }
 
   debug() {
@@ -35,55 +37,46 @@ export class Game {
 
     m1.move(-4);
     console.log(
-      "moved marble by -4 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
+      "moved marble by -4 to " + m1.position + " current state is " + m1.state
     );
     m1.move(100);
     console.log(
-      "moved marble by 100 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
+      "moved marble by 100 to " + m1.position + " current state is " + m1.state
     );
 
     m1.move(1);
     console.log(
-      "moved marble by 1 to " + m1.position + " current state is " + m1.getState
+      "moved marble by 1 to " + m1.position + " current state is " + m1.state
     );
 
     m1.move(-4);
     console.log(
-      "moved marble by -4 to " +
-        m1.position +
-        " current state is " +
-        m1.getState
+      "moved marble by -4 to " + m1.position + " current state is " + m1.state
     );
     m1.move(8, true);
     console.log(
-      "moved marble by 8 to " + m1.position + " current state is " + m1.getState
+      "moved marble by 8 to " + m1.position + " current state is " + m1.state
     );
 
     const m2 = new Marble("green", 0);
     m2.move(1);
     console.log(
-      "moved m2 by 1 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by 1 to " + m2.position + " current state is " + m2.state
     );
 
     m2.move(-4);
     console.log(
-      "moved m2 by -4 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by -4 to " + m2.position + " current state is " + m2.state
     );
 
     m2.move(62);
     console.log(
-      "moved m2 by 62 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by 62 to " + m2.position + " current state is " + m2.state
     );
 
     m2.move(5);
     console.log(
-      "moved m2 by 5 to " + m2.position + " current state is " + m2.getState
+      "moved m2 by 5 to " + m2.position + " current state is " + m2.state
     );
   }
 
@@ -239,8 +232,8 @@ export class Game {
 
       player.marbles.forEach((marble) => {
         if (
-          marble.getState === MarbleState.Ring ||
-          marble.getState === MarbleState.RingMoved
+          marble.state === MarbleState.Ring ||
+          marble.state === MarbleState.RingMoved
         ) {
           //All black cards!!!
           if (
@@ -329,8 +322,8 @@ export class Game {
       player.marbles.forEach((otherMarble) => {
         // We only care about marbles behind the current marble.
         if (
-          otherMarble.getState === MarbleState.Ring ||
-          otherMarble.getState === MarbleState.RingMoved
+          otherMarble.state === MarbleState.Ring ||
+          otherMarble.state === MarbleState.RingMoved
         ) {
           let distance = (marble.position - otherMarble.position) % 64;
           if (distance <= 0) {
@@ -352,8 +345,8 @@ export class Game {
       player.marbles.forEach((otherMarble) => {
         // We only care about marbles behind the current marble.
         if (
-          otherMarble.getState === MarbleState.Ring ||
-          otherMarble.getState === MarbleState.RingMoved
+          otherMarble.state === MarbleState.Ring ||
+          otherMarble.state === MarbleState.RingMoved
         ) {
           let distance = (otherMarble.position - marble.position) % 64;
           if (distance <= 0) {

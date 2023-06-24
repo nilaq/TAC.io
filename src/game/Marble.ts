@@ -32,7 +32,7 @@ export class Marble {
     return this._color;
   }
 
-  get getState(): MarbleState {
+  get state(): MarbleState {
     return this._state;
   }
 

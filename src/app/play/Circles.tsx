@@ -12,33 +12,17 @@ interface CirclesProps {
   width: number;
 }
 
-const Circle = ({
-  className,
-  style,
-  key,
-  children,
-}: {
-  className: string;
-  style: any;
-  key: number;
-  children: any;
-}) => (
-  <div className={className} style={style} key={key}>
-    {children}
-  </div>
-);
-
 const Circles = ({ width }: CirclesProps) => {
   const coordinator = new Coordinator(width, circleSize, circleCount, inset);
 
   const circlesOnBoard = Array.from({ length: circleCount }, (_, i) => (
-    <Circle
+    <div
       className={CircleBaseStyle}
       style={coordinator.getPositionOnBoard(i)}
       key={i}
     >
       {i}
-    </Circle>
+    </div>
   ));
 
   const players = [
@@ -47,15 +31,15 @@ const Circles = ({ width }: CirclesProps) => {
     Player.topLeft,
     Player.topRight,
   ];
-  const houseCircles = players.flatMap((player) =>
+  const houseCircles = players.flatMap((player, index) =>
     Array.from({ length: 4 }, (_, i) => (
-      <Circle
+      <div
         className={CircleBaseStyle}
         style={coordinator.getHousePosition(player, i)}
-        key={i}
+        key={i + 64 + 4 * index}
       >
         {i + 64}
-      </Circle>
+      </div>
     ))
   );
 

@@ -27,10 +27,10 @@ export class Player {
   ) {
     this.team = -1;
     this.marbles = [
-      new Marble(color, startPosition),
-      new Marble(color, startPosition),
-      new Marble(color, startPosition),
-      new Marble(color, startPosition),
+      new Marble(color, startPosition, -1),
+      new Marble(color, startPosition, -2),
+      new Marble(color, startPosition, -3),
+      new Marble(color, startPosition, -4),
     ]; // Assuming each player starts with 4 marbles
     this.hand = []; // This will be filled when game starts
     this.isFinished = false; // Initially, a player is not finished

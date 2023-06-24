@@ -17,18 +17,18 @@ const Cards = (props: { top: boolean; name: string; isTurn: boolean }) => {
   ]);
 
   const selectCard = (selectedCard: Card) => {
-    const cardsCopy = [...cards];
-    cardsCopy.forEach(
-      (card) => (card.selected = card.id === selectedCard.id && !card.selected)
+    setCards((prevCards) =>
+      prevCards.map((card) => ({
+        ...card,
+        selected: card.id === selectedCard.id && !card.selected,
+      }))
     );
-    setCards(cardsCopy);
   };
 
   const removeCard = (removedCard: Card) => {
-    const cardsCopy = [...cards];
-    const index = cardsCopy.findIndex((card) => card.id === removedCard.id);
-    cardsCopy.splice(index, 1);
-    setCards(cardsCopy);
+    setCards((prevCards) =>
+      prevCards.filter((card) => card.id !== removedCard.id)
+    );
   };
 
   const name = (

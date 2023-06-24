@@ -47,24 +47,30 @@ const Marbles = (props: { width: number }) => {
     setGameState(gameState);
   }, [hasChanged, gameState, setGameState]);
 
+  console.log(gameState.board.marbles);
+
   return (
     <>
-      {gameState.board.marbles.map((marble, index) => (
-        <motion.div
-          className={CircleBaseStyle}
-          initial={{ ...coordinator.getPosition(marble) }} // initial state
-          animate={coordinator.getPosition(marble)} // updated state
-          style={{
-            backgroundColor: marble.color,
-          }}
-          key={index}
-        >
-          {marble.position}
-        </motion.div>
-      ))}
+      {gameState.board.marbles.map((marble, index) => {
+        console.log(marble);
+        return (
+          <motion.div
+            className={CircleBaseStyle}
+            initial={{ ...coordinator.getPosition(marble) }} // initial state
+            animate={coordinator.getPosition(marble)} // updated state
+            style={{
+              backgroundColor: marble.color,
+            }}
+            key={index}
+          >
+            {marble.position}
+          </motion.div>
+        );
+      })}
+
       <Button
         onClick={() => {
-          moveMarble(33);
+          moveMarble(5);
         }}
         className="absolute left-[270px] top-[300px] z-20"
       >
